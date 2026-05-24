@@ -20,7 +20,7 @@ const log = getLogger('client');
 
 const getValidationSchema = () => yup.object().shape({});
 
-const NewStatus = () => {
+function NewStatus() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const auth = useAuth();
@@ -84,6 +84,6 @@ const NewStatus = () => {
       </Form>
     </>
   );
-};
+}
 
 export default NewStatus;

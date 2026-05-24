@@ -14,7 +14,7 @@ import routes from '../routes.js';
 
 const getValidationSchema = () => yup.object().shape({});
 
-const Login = () => {
+function Login() {
   const { t } = useTranslation();
 
   const auth = useAuth();
@@ -94,6 +94,6 @@ const Login = () => {
       </Form>
     </>
   );
-};
+}
 
 export default Login;

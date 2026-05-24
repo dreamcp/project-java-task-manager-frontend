@@ -17,7 +17,7 @@ import { selectors as userSelectors } from '../../slices/usersSlice.js';
 import { selectors as labelSelectors } from '../../slices/labelsSlice.js';
 import { selectors as taskStatuseSelectors } from '../../slices/taskStatusesSlice.js';
 
-const TaskFilter = (props) => {
+function TaskFilter(props) {
   const { foundTasks: handler } = props;
   const auth = useAuth();
   const navigate = useNavigate();
@@ -162,6 +162,6 @@ const TaskFilter = (props) => {
       </Card.Body>
     </Card>
   );
-};
+}
 
 export default TaskFilter;

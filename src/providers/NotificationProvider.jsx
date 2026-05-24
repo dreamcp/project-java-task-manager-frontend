@@ -1,6 +1,6 @@
 // @ts-check
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   useLocation,
 } from 'react-router-dom';
@@ -10,12 +10,12 @@ import _ from 'lodash';
 import { NotificationContext } from '../contexts/index.js';
 import { actions as notifyActions } from '../slices/notificationSlice.js';
 
-const NotificationProvider = ({ children }) => {
+function NotificationProvider({ children }) {
   const location = useLocation();
   const dispatch = useDispatch();
   const clean = () => dispatch(notifyActions.clean());
 
-  const messageMapping = {
+  const messageMapping = useMemo(() => ({
     errors(currentErrors) {
       const errors = currentErrors.map((err) => ({ id: _.uniqueId(), ...err, type: 'danger' }));
       dispatch(notifyActions.addMessages(errors));
@@ -28,7 +28,7 @@ const NotificationProvider = ({ children }) => {
       const messages = { id: _.uniqueId(), text, type: 'info' };
       dispatch(notifyActions.addMessage(messages));
     },
-  };
+  }), [dispatch]);
 
   useEffect(() => {
     const { state } = location;
@@ -48,19 +48,20 @@ const NotificationProvider = ({ children }) => {
     }
 
     messageMapping[type](message);
-  }, [location]);
+  }, [location, dispatch, messageMapping]);
+
+  const contextValue = useMemo(() => ({
+    addMessage: messageMapping.info,
+    addErrors: messageMapping.errors,
+    addError: messageMapping.error,
+    clean,
+  }), [messageMapping, clean]);
 
   return (
-    <NotificationContext.Provider value={{
-      addMessage: messageMapping.info,
-      addErrors: messageMapping.errors,
-      addError: messageMapping.error,
-      clean,
-    }}
-    >
+    <NotificationContext.Provider value={contextValue}>
       {children}
     </NotificationContext.Provider>
   );
-};
+}
 
 export default NotificationProvider;

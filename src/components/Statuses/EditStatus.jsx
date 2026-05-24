@@ -20,7 +20,7 @@ const log = getLogger('client');
 
 const getValidationSchema = () => yup.object().shape({});
 
-const EditStatus = () => {
+function EditStatus() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
@@ -32,8 +32,10 @@ const EditStatus = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(routes.apiStatus(params.taskStatusId),
-          { headers: auth.getAuthHeader() });
+        const { data } = await axios.get(
+          routes.apiStatus(params.taskStatusId),
+          { headers: auth.getAuthHeader() },
+        );
         setTaskStatus(data);
       } catch (e) {
         handleError(e, notify, navigate, auth);
@@ -52,8 +54,11 @@ const EditStatus = () => {
     onSubmit: async ({ name }, { setSubmitting, setErrors }) => {
       const newStatus = { name };
       try {
-        const { data } = await axios.put(routes.apiStatus(params.taskStatusId),
-          newStatus, { headers: auth.getAuthHeader() });
+        const { data } = await axios.put(
+          routes.apiStatus(params.taskStatusId),
+          newStatus,
+          { headers: auth.getAuthHeader() },
+        );
         log('status.edit', newStatus);
 
         dispatch(taskStatusesActions.updateTaskStatus(data));
@@ -106,6 +111,6 @@ const EditStatus = () => {
       </Form>
     </>
   );
-};
+}
 
 export default EditStatus;

@@ -17,7 +17,7 @@ import getLogger from '../../lib/logger.js';
 const log = getLogger('labels');
 log.enabled = true;
 
-const Labels = () => {
+function Labels() {
   const { t } = useTranslation();
   const labels = useSelector(selectors.selectAll);
   const auth = useAuth();
@@ -73,6 +73,6 @@ const Labels = () => {
       </Table>
     </>
   );
-};
+}
 
 export default Labels;

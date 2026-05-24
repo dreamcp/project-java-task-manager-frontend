@@ -21,7 +21,7 @@ log.enabled = true;
 
 const getValidationSchema = () => yup.object().shape({});
 
-const EditUser = () => {
+function EditUser() {
   const { t } = useTranslation();
   const auth = useAuth();
   const navigate = useNavigate();
@@ -156,6 +156,6 @@ const EditUser = () => {
       </Form>
     </>
   );
-};
+}
 
 export default EditUser;

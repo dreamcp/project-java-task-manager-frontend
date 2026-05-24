@@ -8,8 +8,6 @@ import getTasks from '../__fixtures__/tasks.js';
 
 const mockSingin = () => HttpResponse.json({ token: 'token' }, { status: 201 });
 
-const mockSignup = () => HttpResponse.json({ token: 'token' });
-
 const mockServer = (server) => {
   const tasks = getTasks();
   const users = getUsers();
@@ -121,9 +119,6 @@ const mockServer = (server) => {
     }),
     http.delete('/api/users/:id', () => new HttpResponse(null, { status: 200 })),
   );
-  server.listen({
-    onUnhandledRequest: 'warn',
-  });
 };
 
 export default {

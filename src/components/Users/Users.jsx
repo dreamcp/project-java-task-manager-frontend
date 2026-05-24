@@ -17,7 +17,7 @@ import getLogger from '../../lib/logger.js';
 const log = getLogger('user');
 log.enabled = true;
 
-const UsersComponent = () => {
+function UsersComponent() {
   const { t } = useTranslation();
   const auth = useAuth();
   const notify = useNotify();
@@ -79,6 +79,6 @@ const UsersComponent = () => {
       </tbody>
     </Table>
   );
-};
+}
 
 export default UsersComponent;

@@ -24,7 +24,7 @@ log.enabled = true;
 
 const getValidationSchema = () => yup.object().shape({});
 
-const NewTask = () => {
+function NewTask() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -183,6 +183,6 @@ const NewTask = () => {
       </Form>
     </>
   );
-};
+}
 
 export default NewTask;

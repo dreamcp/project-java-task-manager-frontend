@@ -20,7 +20,7 @@ const log = getLogger('client');
 
 const getValidationSchema = () => yup.object().shape({});
 
-const EditLabel = () => {
+function EditLabel() {
   const { t } = useTranslation();
   const params = useParams();
   const navigate = useNavigate();
@@ -32,8 +32,10 @@ const EditLabel = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(routes.apiLabel(params.labelId),
-          { headers: auth.getAuthHeader() });
+        const { data } = await axios.get(
+          routes.apiLabel(params.labelId),
+          { headers: auth.getAuthHeader() },
+        );
         setLabel(data);
       } catch (e) {
         handleError(e, notify, navigate);
@@ -53,8 +55,11 @@ const EditLabel = () => {
       const newLabel = { name };
       try {
         log('label.edit', label);
-        const { data } = await axios.put(routes.apiLabel(params.labelId),
-          newLabel, { headers: auth.getAuthHeader() });
+        const { data } = await axios.put(
+          routes.apiLabel(params.labelId),
+          newLabel,
+          { headers: auth.getAuthHeader() },
+        );
         dispatch(labelsActions.updateLabel(data));
         navigate(routes.labelsPagePath(), { state: { message: 'labelEdited' } });
       } catch (e) {
@@ -105,6 +110,6 @@ const EditLabel = () => {
       </Form>
     </>
   );
-};
+}
 
 export default EditLabel;

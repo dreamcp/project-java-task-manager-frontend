@@ -19,7 +19,7 @@ import getLogger from '../../lib/logger.js';
 const log = getLogger('client');
 log.enabled = true;
 
-const Task = () => {
+function Task() {
   const { t } = useTranslation();
   const params = useParams();
   const auth = useAuth();
@@ -32,8 +32,10 @@ const Task = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: taskData } = await axios.get(routes.apiTask(params.taskId),
-          { headers: auth.getAuthHeader() });
+        const { data: taskData } = await axios.get(
+          routes.apiTask(params.taskId),
+          { headers: auth.getAuthHeader() },
+        );
         setTask(taskData);
       } catch (e) {
         handleError(e, notify, navigate);
@@ -121,6 +123,6 @@ const Task = () => {
       </Card.Body>
     </Card>
   );
-};
+}
 
 export default Task;

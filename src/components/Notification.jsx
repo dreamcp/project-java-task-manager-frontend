@@ -11,7 +11,7 @@ import getLogger from '../lib/logger.js';
 const log = getLogger('notification');
 log.enabled = true;
 
-const Notification = () => {
+function Notification() {
   const messages = useSelector(selectors.selectAll);
   const { t } = useTranslation();
 
@@ -24,6 +24,6 @@ const Notification = () => {
       ))}
     </>
   );
-};
+}
 
 export default Notification;

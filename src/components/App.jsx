@@ -48,7 +48,15 @@ import getLogger from '../lib/logger.js';
 const log = getLogger('App');
 log.enabled = true;
 
-const App = () => {
+function PrivateRoute({ children }) {
+  const auth = useAuth();
+  if (!auth.user) {
+    return <Navigate to={routes.homePagePath()} state={{ message: 'accessDenied', type: 'error' }} />;
+  }
+  return children;
+}
+
+function App() {
   const notify = useNotify();
   const navigate = useNavigate();
   const auth = useAuth();
@@ -120,13 +128,6 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.user]);
 
-  const PrivateRoute = ({ children }) => {
-    if (!auth.user) {
-      return <Navigate to={routes.homePagePath()} state={{ message: 'accessDenied', type: 'error' }} />;
-    }
-    return children;
-  };
-
   if (isLoading) {
     return null;
   }
@@ -168,6 +169,6 @@ const App = () => {
       </footer>
     </>
   );
-};
+}
 
 export default App;

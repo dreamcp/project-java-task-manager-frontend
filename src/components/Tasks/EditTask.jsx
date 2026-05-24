@@ -25,7 +25,7 @@ log.enabled = true;
 
 const getValidationSchema = () => yup.object().shape({});
 
-const EditTask = () => {
+function EditTask() {
   const { t } = useTranslation();
   const { executors, labels, taskStatuses } = useSelector((state) => ({
     executors: userSelectors.selectAll(state),
@@ -43,8 +43,10 @@ const EditTask = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: currentTaskData } = await axios.get(routes.apiTask(params.taskId),
-          { headers: auth.getAuthHeader() });
+        const { data: currentTaskData } = await axios.get(
+          routes.apiTask(params.taskId),
+          { headers: auth.getAuthHeader() },
+        );
         setTask(currentTaskData);
       } catch (e) {
         handleError(e, notify, navigate);
@@ -73,8 +75,11 @@ const EditTask = () => {
           taskStatusId: parseInt(currentTaskData.taskStatusId, 10),
           labelIds: currentTaskData.labels.map((id) => parseInt(id, 10)),
         };
-        const { data } = await axios.put(routes.apiTask(task.id),
-          requestTask, { headers: auth.getAuthHeader() });
+        const { data } = await axios.put(
+          routes.apiTask(task.id),
+          requestTask,
+          { headers: auth.getAuthHeader() },
+        );
         // data.taskStatus = taskStatuses.find((item) => item.id === data.taskStatus?.id);
         log('task.edit', data);
         dispatch(tasksActions.updateTask(data));
@@ -206,6 +211,6 @@ const EditTask = () => {
       </Form>
     </>
   );
-};
+}
 
 export default EditTask;

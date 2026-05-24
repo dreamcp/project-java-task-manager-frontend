@@ -1,17 +1,20 @@
 parser: '@babel/eslint-parser'
+parserOptions:
+  requireConfigFile: false
+  babelOptions:
+    parserOpts:
+      plugins:
+        - jsx
 
 plugins:
   - react
   - jest
-  - functional
   - testing-library
   - jest-dom
 
 extends:
   - airbnb
   - "plugin:jest/recommended"
-  - "plugin:functional/external-recommended"
-  - "plugin:functional/recommended"
   - "plugin:react/recommended"
   - "plugin:react-hooks/recommended"
   - "plugin:testing-library/react"
@@ -23,10 +26,9 @@ env:
   jest: true
   # es2020: true
 
-# parserOptions:
-#   ecmaVersion: 2020
-
-# settings:
+settings:
+  jest:
+    version: 29
 #   import/resolver:
 #     webpack:
 #     node:
@@ -36,16 +38,18 @@ env:
 
 rules:
   import/extensions: 0
-  # TODO: cause an error
   import/no-unresolved: 0
-  # react/jsx-filename-extension: 0
+  import/no-extraneous-dependencies:
+    - error
+    - devDependencies:
+        - "**/__tests__/**"
+        - "**/mocks/**"
+        - "**/vite.config.*"
+        - "**/setupTests.*"
   react/prop-types: 0
   no-console: 0
-  functional/no-conditional-statement: 0
-  functional/no-expression-statement: 0
-  functional/immutable-data: 0
-  functional/functional-parameters: 0
-  functional/no-try-statement: 0
-  functional/no-throw-statement: 0
   no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
+  max-len: 0
   testing-library/no-debug: 0
+  testing-library/no-render-in-lifecycle: 0
+  testing-library/no-debugging-utils: 0

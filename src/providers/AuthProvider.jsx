@@ -1,10 +1,10 @@
 // @ts-check
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { AuthContext } from '../contexts/index.js';
 
-const AuthProvider = ({ children }) => {
+function AuthProvider({ children }) {
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const [user, setUser] = useState(currentUser || null);
 
@@ -37,18 +37,19 @@ const AuthProvider = ({ children }) => {
     return userData.token ? { Authorization: `Bearer ${userData.token}` } : {};
   };
 
+  const contextValue = useMemo(() => ({
+    logIn,
+    logOut,
+    getAuthHeader,
+    user,
+    update,
+  }), [user, logIn, logOut, getAuthHeader, update]);
+
   return (
-    <AuthContext.Provider value={{
-      logIn,
-      logOut,
-      getAuthHeader,
-      user,
-      update,
-    }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export default AuthProvider;

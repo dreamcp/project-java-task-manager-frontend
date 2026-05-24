@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Button } from 'react-bootstrap';
 
-const Welcome = () => {
+function Welcome() {
   const { t } = useTranslation();
   return (
     <Card>
@@ -18,6 +18,6 @@ const Welcome = () => {
       </Card.Body>
     </Card>
   );
-};
+}
 
 export default Welcome;

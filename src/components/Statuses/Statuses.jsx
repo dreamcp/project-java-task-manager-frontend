@@ -12,7 +12,7 @@ import handleError from '../../utils.js';
 import { useAuth, useNotify } from '../../hooks/index.js';
 import routes from '../../routes.js';
 
-const Statuses = () => {
+function Statuses() {
   const { t } = useTranslation();
   const auth = useAuth();
   const notify = useNotify();
@@ -69,6 +69,6 @@ const Statuses = () => {
       </Table>
     </>
   );
-};
+}
 
 export default Statuses;

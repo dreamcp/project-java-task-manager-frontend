@@ -21,7 +21,7 @@ log.enabled = true;
 
 const getValidationSchema = () => yup.object().shape({});
 
-const Registration = () => {
+function Registration() {
   const { t } = useTranslation();
   const notify = useNotify();
   const navigate = useNavigate();
@@ -141,6 +141,6 @@ const Registration = () => {
       </Form>
     </>
   );
-};
+}
 
 export default Registration;

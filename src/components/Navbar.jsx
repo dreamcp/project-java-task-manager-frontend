@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/index.js';
 import routes from '../routes.js';
 
-const Navbar = () => {
+function Navbar() {
   const { logOut, user } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -41,6 +41,6 @@ const Navbar = () => {
       </Container>
     </BootstrapNavbar>
   );
-};
+}
 
 export default Navbar;

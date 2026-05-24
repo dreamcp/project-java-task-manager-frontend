@@ -14,6 +14,10 @@ import init from '../src/init.jsx';
 
 const server = setupServer();
 
+beforeAll(() => {
+  server.listen({ onUnhandledRequest: 'warn' });
+});
+
 beforeEach(async () => {
   mocks.mockServer(server);
   global.localStorage.clear();

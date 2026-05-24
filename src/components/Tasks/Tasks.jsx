@@ -16,7 +16,7 @@ import { actions as taskActions, selectors as tasksSelectors } from '../../slice
 import { selectors as userSelectors } from '../../slices/usersSlice.js';
 import { selectors as taskStatuseSelectors } from '../../slices/taskStatusesSlice.js';
 
-const Tasks = () => {
+function Tasks() {
   const { t } = useTranslation();
   // const tasks = useSelector(tasksSelectors.selectAll);
   const [filteredTasks, setFilteredTasks] = useState(null);
@@ -99,6 +99,6 @@ const Tasks = () => {
       </Table>
     </>
   );
-};
+}
 
 export default Tasks;
