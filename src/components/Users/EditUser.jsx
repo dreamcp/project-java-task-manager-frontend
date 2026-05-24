@@ -7,7 +7,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import * as yup from 'yup';
-import { useParams, useHistory } from 'react-router-dom';
+import { Navigate, useParams, useNavigate } from 'react-router-dom';
 
 import { actions as usersActions, selectors } from '../../slices/usersSlice.js';
 import handleError from '../../utils.js';
@@ -24,7 +24,7 @@ const getValidationSchema = () => yup.object().shape({});
 const EditUser = () => {
   const { t } = useTranslation();
   const auth = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
   const params = useParams();
   const notify = useNotify();
   const dispatch = useDispatch();
@@ -50,8 +50,7 @@ const EditUser = () => {
         auth.update(newUser);
         dispatch(usersActions.updateUser(newUser));
         resetForm();
-        const from = { pathname: routes.usersPagePath() };
-        history.push(from, { message: 'userEdited' });
+        navigate(routes.usersPagePath(), { state: { message: 'userEdited' } });
       } catch (e) {
         log('user.edit.error', e);
         setSubmitting(false);
@@ -63,7 +62,7 @@ const EditUser = () => {
         } else if (e.response?.status === 403) {
           notify.addErrors([{ text: 'userDeleteDenied' }]);
         } else {
-          handleError(e, notify, history);
+          handleError(e, notify, navigate);
         }
       }
     },
@@ -76,9 +75,7 @@ const EditUser = () => {
   }
 
   if (user.email !== auth.user.email) {
-    const from = { pathname: routes.usersPagePath() };
-    history.push(from, { message: 'userEditDenied', type: 'error' });
-    return null;
+    return <Navigate to={routes.usersPagePath()} state={{ message: 'userEditDenied', type: 'error' }} />;
   }
 
   return (

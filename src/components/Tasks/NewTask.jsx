@@ -1,7 +1,7 @@
 // @ts-check
 
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Form, Button } from 'react-bootstrap';
@@ -28,7 +28,7 @@ const NewTask = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const { executors, labels, taskStatuses } = useSelector((state) => ({
     executors: userSelectors.selectAll(state),
     labels: labelSelectors.selectAll(state),
@@ -61,8 +61,7 @@ const NewTask = () => {
         // data.taskStatus = taskStatuses.find((item) => item.id === data.taskStatus.id);
         log('task.create', data);
         dispatch(tasksActions.addTask(data));
-        const from = { pathname: routes.tasksPagePath() };
-        history.push(from, { message: 'taskCreated' });
+        navigate(routes.tasksPagePath(), { state: { message: 'taskCreated' } });
       } catch (e) {
         log('task.create.error', e);
         setSubmitting(false);
@@ -72,7 +71,7 @@ const NewTask = () => {
           setErrors(errors);
           notify.addError('taskCreateFail');
         } else {
-          handleError(e, notify, history, auth);
+          handleError(e, notify, navigate, auth);
         }
       }
     },

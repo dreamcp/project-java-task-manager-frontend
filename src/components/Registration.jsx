@@ -7,7 +7,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import * as yup from 'yup';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import handleError from '../utils.js';
 import { actions as usersActions } from '../slices/usersSlice.js';
@@ -24,7 +24,7 @@ const getValidationSchema = () => yup.object().shape({});
 const Registration = () => {
   const { t } = useTranslation();
   const notify = useNotify();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const f = useFormik({
@@ -43,8 +43,7 @@ const Registration = () => {
         const { data } = await axios.post(routes.apiUsers(), user);
 
         dispatch(usersActions.addUser(data));
-        const from = { pathname: routes.loginPagePath() };
-        history.push(from, { message: 'registrationSuccess' });
+        navigate(routes.loginPagePath(), { state: { message: 'registrationSuccess' } });
       } catch (e) {
         log('create.error', e);
         setSubmitting(false);
@@ -56,7 +55,7 @@ const Registration = () => {
         } else if (e.response?.status === 422) {
           notify.addError('registrationFail');
         } else {
-          handleError(e, notify, history);
+          handleError(e, notify, navigate);
         }
       }
     },

@@ -17,7 +17,7 @@ import resources from './locales/index.js';
 import store from './slices/index.js';
 
 const app = async () => {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = import.meta.env.PROD;
 
   const rollbarConfig = {
     accessToken: process.env.ROLLBAR_TOKEN,

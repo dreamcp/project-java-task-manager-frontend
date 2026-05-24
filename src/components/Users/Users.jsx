@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Table, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth, useNotify } from '../../hooks/index.js';
 import routes from '../../routes.js';
@@ -21,7 +21,7 @@ const UsersComponent = () => {
   const { t } = useTranslation();
   const auth = useAuth();
   const notify = useNotify();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const users = useSelector(selectors.selectAll);
@@ -41,7 +41,7 @@ const UsersComponent = () => {
       } else if (e.response?.status === 422) {
         notify.addError('userDeleteFail');
       } else {
-        handleError(e, notify, history, auth);
+        handleError(e, notify, navigate, auth);
       }
     }
   };

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Card, Button, Col, Form, Row,
 } from 'react-bootstrap';
@@ -20,7 +20,7 @@ import { selectors as taskStatuseSelectors } from '../../slices/taskStatusesSlic
 const TaskFilter = (props) => {
   const { foundTasks: handler } = props;
   const auth = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const notify = useNotify();
   const { executors, labels, taskStatuses } = useSelector((state) => ({
@@ -63,7 +63,7 @@ const TaskFilter = (props) => {
         handler(response);
       } catch (e) {
         setSubmitting(false);
-        handleError(e, notify, history, auth);
+        handleError(e, notify, navigate, auth);
       }
     },
     validateOnBlur: false,

@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import {
-  Switch,
+  Navigate,
   Route,
-  useHistory,
+  Routes,
+  useNavigate,
 } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -49,7 +50,7 @@ log.enabled = true;
 
 const App = () => {
   const notify = useNotify();
-  const history = useHistory();
+  const navigate = useNavigate();
   const auth = useAuth();
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(true);
@@ -114,16 +115,14 @@ const App = () => {
     const promises = dataRoutes.filter(({ isSecurity }) => (isSecurity ? auth.user : true))
       .map(({ getData }) => getData());
     Promise.all(promises)
-      .catch((error) => handleError(error, notify, history, auth))
+      .catch((error) => handleError(error, notify, navigate, auth))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.user]);
 
   const PrivateRoute = ({ children }) => {
     if (!auth.user) {
-      const from = { pathname: routes.homePagePath() };
-      history.push(from, { message: 'accessDenied', type: 'error' });
-      return null;
+      return <Navigate to={routes.homePagePath()} state={{ message: 'accessDenied', type: 'error' }} />;
     }
     return children;
   };
@@ -138,51 +137,29 @@ const App = () => {
       <div className="container wrapper flex-grow-1">
         <Notification />
         <h1 className="my-4">{null}</h1>
-        <Switch>
-          <Route exact path={routes.homePagePath()} component={Welcome} />
-          <Route path={routes.loginPagePath()} component={Login} />
-          <Route path={routes.signupPagePath()} component={Registration} />
+        <Routes>
+          <Route path={routes.homePagePath()} element={<Welcome />} />
+          <Route path={routes.loginPagePath()} element={<Login />} />
+          <Route path={routes.signupPagePath()} element={<Registration />} />
 
-          <Route exact path={routes.usersPagePath()}><UsersComponent /></Route>
-          <Route path={routes.userEditPagePath(':userId')}>
-            <PrivateRoute><EditUser /></PrivateRoute>
-          </Route>
+          <Route path={routes.usersPagePath()} element={<UsersComponent />} />
+          <Route path={routes.userEditPagePath(':userId')} element={<PrivateRoute><EditUser /></PrivateRoute>} />
 
-          <Route exact path={routes.statusesPagePath()}>
-            <PrivateRoute><Statuses /></PrivateRoute>
-          </Route>
-          <Route path={routes.newStatusPagePath()}>
-            <PrivateRoute><NewStatus /></PrivateRoute>
-          </Route>
-          <Route path={routes.statusEditPagePath(':taskStatusId')}>
-            <PrivateRoute><EditStatus /></PrivateRoute>
-          </Route>
+          <Route path={routes.statusesPagePath()} element={<PrivateRoute><Statuses /></PrivateRoute>} />
+          <Route path={routes.newStatusPagePath()} element={<PrivateRoute><NewStatus /></PrivateRoute>} />
+          <Route path={routes.statusEditPagePath(':taskStatusId')} element={<PrivateRoute><EditStatus /></PrivateRoute>} />
 
-          <Route exact path={routes.labelsPagePath()}>
-            <PrivateRoute><Labels /></PrivateRoute>
-          </Route>
-          <Route path={routes.labelEditPagePath(':labelId')}>
-            <PrivateRoute><EditLabel /></PrivateRoute>
-          </Route>
-          <Route path={routes.newLabelPagePath()}>
-            <PrivateRoute><NewLabel /></PrivateRoute>
-          </Route>
+          <Route path={routes.labelsPagePath()} element={<PrivateRoute><Labels /></PrivateRoute>} />
+          <Route path={routes.labelEditPagePath(':labelId')} element={<PrivateRoute><EditLabel /></PrivateRoute>} />
+          <Route path={routes.newLabelPagePath()} element={<PrivateRoute><NewLabel /></PrivateRoute>} />
 
-          <Route exact path={routes.tasksPagePath()}>
-            <PrivateRoute><Tasks /></PrivateRoute>
-          </Route>
-          <Route path={routes.newTaskPagePath()}>
-            <PrivateRoute><NewTask /></PrivateRoute>
-          </Route>
-          <Route path={routes.taskEditPagePath(':taskId')}>
-            <PrivateRoute><EditTask /></PrivateRoute>
-          </Route>
-          <Route path={routes.taskPagePath(':taskId')}>
-            <PrivateRoute><Task /></PrivateRoute>
-          </Route>
+          <Route path={routes.tasksPagePath()} element={<PrivateRoute><Tasks /></PrivateRoute>} />
+          <Route path={routes.newTaskPagePath()} element={<PrivateRoute><NewTask /></PrivateRoute>} />
+          <Route path={routes.taskEditPagePath(':taskId')} element={<PrivateRoute><EditTask /></PrivateRoute>} />
+          <Route path={routes.taskPagePath(':taskId')} element={<PrivateRoute><Task /></PrivateRoute>} />
 
-          <Route path="*" component={NotFoundPage} />
-        </Switch>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
       </div>
       <footer>
         <div className="container my-5 pt-4 border-top">

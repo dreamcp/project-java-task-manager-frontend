@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import { actions as taskStatusesActions } from '../../slices/taskStatusesSlice.js';
@@ -22,7 +22,7 @@ const getValidationSchema = () => yup.object().shape({});
 
 const EditStatus = () => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const params = useParams();
   const auth = useAuth();
   const notify = useNotify();
@@ -36,7 +36,7 @@ const EditStatus = () => {
           { headers: auth.getAuthHeader() });
         setTaskStatus(data);
       } catch (e) {
-        handleError(e, notify, history, auth);
+        handleError(e, notify, navigate, auth);
       }
     };
     fetchData();
@@ -57,8 +57,7 @@ const EditStatus = () => {
         log('status.edit', newStatus);
 
         dispatch(taskStatusesActions.updateTaskStatus(data));
-        const from = { pathname: routes.statusesPagePath() };
-        history.push(from, { message: 'statusEdited' });
+        navigate(routes.statusesPagePath(), { state: { message: 'statusEdited' } });
       } catch (e) {
         log('label.edit.error', e);
         setSubmitting(false);
@@ -68,7 +67,7 @@ const EditStatus = () => {
           setErrors(errors);
           notify.addError('taskStatusEditFail');
         } else {
-          handleError(e, notify, history);
+          handleError(e, notify, navigate);
         }
       }
     },

@@ -1,15 +1,16 @@
 // @ts-check
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import init from './init.jsx';
 import './index.scss';
 
-if (process.env.NODE_ENV !== 'production') {
+if (import.meta.env.DEV) {
   localStorage.debug = 'frontend:*';
 }
 
 const app = async () => {
   const vdom = await init();
-  ReactDOM.render(vdom, document.querySelector('#container'));
+  const root = createRoot(document.querySelector('#container'));
+  root.render(vdom);
   return vdom;
 };
 

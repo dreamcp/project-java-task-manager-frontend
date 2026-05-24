@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Table, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { actions as labelsActions, selectors } from '../../slices/labelsSlice.js';
 import handleError from '../../utils.js';
@@ -22,7 +22,7 @@ const Labels = () => {
   const labels = useSelector(selectors.selectAll);
   const auth = useAuth();
   const notify = useNotify();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const removeLabel = async (event, id) => {
@@ -35,7 +35,7 @@ const Labels = () => {
       if (e.response.status === 422) {
         notify.addError('labelRemoveFail');
       } else {
-        handleError(e, notify, history, auth);
+        handleError(e, notify, navigate, auth);
       }
     }
   };

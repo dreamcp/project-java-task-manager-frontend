@@ -7,7 +7,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { actions as labelsActions } from '../../slices/labelsSlice.js';
 import routes from '../../routes.js';
@@ -22,7 +22,7 @@ const getValidationSchema = () => yup.object().shape({});
 
 const NewLabel = () => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const auth = useAuth();
   const notify = useNotify();
   const dispatch = useDispatch();
@@ -40,8 +40,7 @@ const NewLabel = () => {
         const { data } = await axios
           .post(routes.apiLabels(), label, { headers: auth.getAuthHeader() });
         dispatch(labelsActions.addLabel(data));
-        const from = { pathname: routes.labelsPagePath() };
-        history.push(from, { message: 'labelCreated' });
+        navigate(routes.labelsPagePath(), { state: { message: 'labelCreated' } });
       } catch (e) {
         log('label.create.error', e);
         setSubmitting(false);
@@ -51,7 +50,7 @@ const NewLabel = () => {
           setErrors(errors);
           notify.addError('labelCreateFail');
         } else {
-          handleError(e, notify, history, auth);
+          handleError(e, notify, navigate, auth);
         }
       }
     },

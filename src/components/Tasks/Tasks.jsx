@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Table, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import handleError from '../../utils.js';
 import { useAuth, useNotify } from '../../hooks/index.js';
@@ -22,7 +22,7 @@ const Tasks = () => {
   const [filteredTasks, setFilteredTasks] = useState(null);
   const auth = useAuth();
   const notify = useNotify();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { executors, taskStatuses, tasks } = useSelector((state) => ({
@@ -47,7 +47,7 @@ const Tasks = () => {
       } else if (e.response?.status === 422) {
         notify.addError('taskRemoveFail');
       } else {
-        handleError(e, notify, history, auth);
+        handleError(e, notify, navigate, auth);
       }
     }
   };

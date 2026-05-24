@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import { actions as labelsActions } from '../../slices/labelsSlice.js';
@@ -23,7 +23,7 @@ const getValidationSchema = () => yup.object().shape({});
 const EditLabel = () => {
   const { t } = useTranslation();
   const params = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const auth = useAuth();
   const notify = useNotify();
   const [label, setLabel] = useState(null);
@@ -36,7 +36,7 @@ const EditLabel = () => {
           { headers: auth.getAuthHeader() });
         setLabel(data);
       } catch (e) {
-        handleError(e, notify, history);
+        handleError(e, notify, navigate);
       }
     };
     fetchData();
@@ -56,8 +56,7 @@ const EditLabel = () => {
         const { data } = await axios.put(routes.apiLabel(params.labelId),
           newLabel, { headers: auth.getAuthHeader() });
         dispatch(labelsActions.updateLabel(data));
-        const from = { pathname: routes.labelsPagePath() };
-        history.push(from, { message: 'labelEdited' });
+        navigate(routes.labelsPagePath(), { state: { message: 'labelEdited' } });
       } catch (e) {
         log('label.edit.error', e);
         setSubmitting(false);
@@ -67,7 +66,7 @@ const EditLabel = () => {
           setErrors(errors);
           notify.addError('labelEditFail');
         } else {
-          handleError(e, notify, history, auth);
+          handleError(e, notify, navigate, auth);
         }
       }
     },

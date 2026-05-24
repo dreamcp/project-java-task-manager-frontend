@@ -3,20 +3,19 @@
 import React from 'react';
 import { Navbar as BootstrapNavbar, Container, Nav } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/index.js';
 import routes from '../routes.js';
 
 const Navbar = () => {
   const { logOut, user } = useAuth();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const onLogout = () => {
     logOut();
-    const from = { pathname: routes.homePagePath() };
-    history.push(from, { message: 'logoutSuccess' });
+    navigate(routes.homePagePath(), { state: { message: 'logoutSuccess' } });
   };
 
   return (

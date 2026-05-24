@@ -6,7 +6,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import handleError from '../utils.js';
 import { useAuth, useNotify } from '../hooks/index.js';
@@ -19,7 +19,7 @@ const Login = () => {
 
   const auth = useAuth();
   const notify = useNotify();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const f = useFormik({
     initialValues: {
@@ -33,8 +33,7 @@ const Login = () => {
         const { data: token } = await axios.post(routes.apiLogin(), userData);
 
         auth.logIn({ ...formData, token });
-        const { from } = { from: { pathname: routes.homePagePath() } };
-        history.push(from, { message: 'loginSuccess' });
+        navigate(routes.homePagePath(), { state: { message: 'loginSuccess' } });
       } catch (e) {
         if (e.response?.status === 422 && Array.isArray(e.response.data)) {
           const errors = e.response.data
@@ -43,7 +42,7 @@ const Login = () => {
         } else if (e.response?.status === 401) {
           notify.addErrors([{ text: 'loginFail' }]);
         } else {
-          handleError(e, notify, history, auth);
+          handleError(e, notify, navigate, auth);
         }
         setSubmitting(false);
       }

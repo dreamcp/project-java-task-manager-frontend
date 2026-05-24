@@ -1,181 +1,131 @@
 import _ from 'lodash';
+import { http, HttpResponse } from 'msw';
 
 import getUsers from '../__fixtures__/executors.js';
 import getLabels from '../__fixtures__/labels.js';
 import getStatuses from '../__fixtures__/statuses.js';
 import getTasks from '../__fixtures__/tasks.js';
 
-const mockInitialData = (_req, res, ctx) => {
-  const data = {
-    channels: [{ id: 1, name: 'General' }, { id: 2, name: 'Random' }],
-    messages: [],
-    currentChannelId: 1,
-  };
+const mockSingin = () => HttpResponse.json({ token: 'token' }, { status: 201 });
 
-  return res(
-    ctx.status(200),
-    ctx.json(data),
-  );
-};
+const mockSignup = () => HttpResponse.json({ token: 'token' });
 
-const mockSignup = (_req, res, ctx) => res(
-  ctx.status(200),
-  ctx.json({ token: 'token' }),
-);
-
-const mockSingin = (_req, res, ctx) => res(
-  ctx.status(201),
-  ctx.json({ token: 'token' }),
-);
-
-const mockServer = (server, rest) => {
+const mockServer = (server) => {
   const tasks = getTasks();
   const users = getUsers();
   const labels = getLabels();
   const taskStatuses = getStatuses();
 
   server.use(
-    rest.post('/api/login', mockSingin),
+    http.post('/api/login', mockSingin),
 
-    rest.post('/api/statuses', (_req, res, ctx) => {
+    http.post('/api/statuses', async ({ request }) => {
+      const body = await request.json();
       const result = {
-        ..._req.body,
+        ...body,
         id: _.uniqueId('test_'),
         createdAt: Date.now(),
       };
-      return res(ctx.status(200), ctx.json(result));
+      return HttpResponse.json(result);
     }),
-    rest.get('/api/statuses', (_req, res, ctx) => {
-      const result = taskStatuses;
-      return res(ctx.status(200), ctx.json(result));
-    }),
-
-    rest.get('/api/statuses/:taskStatusId', (_req, res, ctx) => {
-      const { taskStatusId } = _req.params;
+    http.get('/api/statuses', () => HttpResponse.json(taskStatuses)),
+    http.get('/api/statuses/:taskStatusId', ({ params }) => {
+      const { taskStatusId } = params;
       const result = taskStatuses.find((status) => status.id.toString() === taskStatusId);
-      return res(ctx.status(200), ctx.json(result));
+      return HttpResponse.json(result);
     }),
-
-    rest.put('/api/statuses/:taskStatusId', (_req, res, ctx) => {
-      const { taskStatusId } = _req.params;
+    http.put('/api/statuses/:taskStatusId', async ({ params, request }) => {
+      const { taskStatusId } = params;
       const currentItem = taskStatuses.find((status) => status.id.toString() === taskStatusId);
-      const result = {
-        ...currentItem,
-        ..._req.body,
-      };
-      return res(ctx.status(200), ctx.json(result));
+      const body = await request.json();
+      const result = { ...currentItem, ...body };
+      return HttpResponse.json(result);
     }),
-    rest.delete('/api/statuses/:taskStatusId', (_req, res, ctx) => res(ctx.status(200))),
+    http.delete('/api/statuses/:taskStatusId', () => new HttpResponse(null, { status: 200 })),
 
-    rest.post('/api/labels', (_req, res, ctx) => {
+    http.post('/api/labels', async ({ request }) => {
+      const body = await request.json();
       const result = {
-        ..._req.body,
+        ...body,
         id: _.uniqueId('test_'),
         createdAt: Date.now(),
       };
-      return res(ctx.status(200), ctx.json(result));
+      return HttpResponse.json(result);
     }),
-    rest.get('/api/labels', (_req, res, ctx) => {
-      const result = labels;
-      return res(ctx.status(200), ctx.json(result));
-    }),
-    rest.get('/api/labels/:taskLabelId', (_req, res, ctx) => {
-      const { taskLabelId } = _req.params;
+    http.get('/api/labels', () => HttpResponse.json(labels)),
+    http.get('/api/labels/:taskLabelId', ({ params }) => {
+      const { taskLabelId } = params;
       const result = labels.find((label) => label.id.toString() === taskLabelId);
-      return res(ctx.status(200), ctx.json(result));
+      return HttpResponse.json(result);
     }),
-    rest.put('/api/labels/:taskLabelId', (_req, res, ctx) => {
-      const { taskLabelId } = _req.params;
+    http.put('/api/labels/:taskLabelId', async ({ params, request }) => {
+      const { taskLabelId } = params;
       const currentItem = labels.find((label) => label.id.toString() === taskLabelId);
-      const result = {
-        ...currentItem,
-        ..._req.body,
-      };
-      return res(ctx.status(200), ctx.json(result));
+      const body = await request.json();
+      const result = { ...currentItem, ...body };
+      return HttpResponse.json(result);
     }),
-    rest.delete('/api/labels/:id', (_req, res, ctx) => res(ctx.status(200))),
+    http.delete('/api/labels/:id', () => new HttpResponse(null, { status: 200 })),
 
-    rest.post('/api/tasks', (_req, res, ctx) => {
+    http.post('/api/tasks', async ({ request }) => {
+      const body = await request.json();
       const result = {
-        ..._req.body,
+        ...body,
         id: _.uniqueId('test_'),
         createdAt: Date.now(),
-        author: {
-          id: users[0].id,
-        },
-        taskStatus: {
-          id: _req.body.taskStatusId,
-        },
+        author: { id: users[0].id },
+        taskStatus: { id: body.taskStatusId },
       };
-      return res(ctx.status(200), ctx.json(result));
+      return HttpResponse.json(result);
     }),
-    rest.get('/api/tasks', (_req, res, ctx) => {
-      const result = tasks;
-      return res(ctx.status(200), ctx.json(result));
-    }),
-    rest.get('/api/tasks/:taskId', (_req, res, ctx) => {
-      const { taskId } = _req.params;
+    http.get('/api/tasks', () => HttpResponse.json(tasks)),
+    http.get('/api/tasks/:taskId', ({ params }) => {
+      const { taskId } = params;
       const result = tasks.find((task) => task.id.toString() === taskId);
-      return res(ctx.status(200), ctx.json(result));
+      return HttpResponse.json(result);
     }),
-    rest.put('/api/tasks/:taskId', (_req, res, ctx) => {
-      const { taskId } = _req.params;
+    http.put('/api/tasks/:taskId', async ({ params, request }) => {
+      const { taskId } = params;
       const currentItem = tasks.find((task) => task.id.toString() === taskId);
+      const body = await request.json();
       const result = {
         ...currentItem,
-        ..._req.body,
-        taskStatus: {
-          check: 'hello',
-          id: _req.body.taskStatusId,
-        },
+        ...body,
+        taskStatus: { check: 'hello', id: body.taskStatusId },
       };
-      return res(ctx.status(200), ctx.json(result));
+      return HttpResponse.json(result);
     }),
-    rest.delete('/api/tasks/:id', (_req, res, ctx) => {
-      const result = {
-        ..._req.body,
-      };
-      return res(ctx.status(200), ctx.json(result));
-    }),
+    http.delete('/api/tasks/:id', () => new HttpResponse(null, { status: 200 })),
 
-    rest.post('/api/users', (_req, res, ctx) => {
+    http.post('/api/users', async ({ request }) => {
+      const body = await request.json();
       const result = {
-        ..._req.body,
+        ...body,
         id: _.uniqueId('test_'),
         createdAt: Date.now(),
       };
-      return res(ctx.status(200), ctx.json(result));
+      return HttpResponse.json(result);
     }),
-    rest.get('/api/users', (_req, res, ctx) => {
-      const result = users;
-      return res(ctx.status(200), ctx.json(result));
-    }),
-    rest.get('/api/users/:userId', (_req, res, ctx) => {
-      const { userId } = _req.params;
+    http.get('/api/users', () => HttpResponse.json(users)),
+    http.get('/api/users/:userId', ({ params }) => {
+      const { userId } = params;
       const result = users.find((u) => u.id.toString() === userId);
-      return res(ctx.status(200), ctx.json(result));
+      return HttpResponse.json(result);
     }),
-    rest.put('/api/users/:userId', (_req, res, ctx) => {
-      const { userId } = _req.params;
+    http.put('/api/users/:userId', async ({ params, request }) => {
+      const { userId } = params;
       const currentItem = users.find((u) => u.id.toString() === userId);
-      const result = {
-        ...currentItem,
-        ..._req.body,
-      };
-      return res(ctx.status(200), ctx.json(result));
+      const body = await request.json();
+      const result = { ...currentItem, ...body };
+      return HttpResponse.json(result);
     }),
-    rest.delete('/api/users/:id', (_req, res, ctx) => res(ctx.status(200))),
+    http.delete('/api/users/:id', () => new HttpResponse(null, { status: 200 })),
   );
   server.listen({
-    onUnhandledRequest: (req) => {
-      console.error(`There is no handler for "${req.url.href}"`);
-    },
+    onUnhandledRequest: 'warn',
   });
 };
 
 export default {
-  mockInitialData,
-  mockSignup,
-  mockSingin,
   mockServer,
 };

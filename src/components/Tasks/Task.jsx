@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { useParams, Link, useHistory } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Card, Button, Container, Row, Col, Form,
 } from 'react-bootstrap';
@@ -24,7 +24,7 @@ const Task = () => {
   const params = useParams();
   const auth = useAuth();
   const notify = useNotify();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [task, setTask] = useState(null);
@@ -36,7 +36,7 @@ const Task = () => {
           { headers: auth.getAuthHeader() });
         setTask(taskData);
       } catch (e) {
-        handleError(e, notify, history);
+        handleError(e, notify, navigate);
       }
     };
     fetchData();
@@ -52,10 +52,9 @@ const Task = () => {
     try {
       await axios.delete(routes.apiTask(id), { headers: auth.getAuthHeader() });
       dispatch(tasksActions.removeTask(id));
-      const from = { pathname: routes.tasksPagePath() };
-      history.push(from, { message: 'taskRemoved' });
+      navigate(routes.tasksPagePath(), { state: { message: 'taskRemoved' } });
     } catch (e) {
-      handleError(e, notify, history, auth);
+      handleError(e, notify, navigate, auth);
     }
   };
 

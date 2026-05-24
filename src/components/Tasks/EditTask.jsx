@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Form, Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import axios from 'axios';
 
@@ -37,7 +37,7 @@ const EditTask = () => {
   const params = useParams();
   const auth = useAuth();
   const notify = useNotify();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const EditTask = () => {
           { headers: auth.getAuthHeader() });
         setTask(currentTaskData);
       } catch (e) {
-        handleError(e, notify, history);
+        handleError(e, notify, navigate);
       }
     };
     fetchData();
@@ -78,8 +78,7 @@ const EditTask = () => {
         // data.taskStatus = taskStatuses.find((item) => item.id === data.taskStatus?.id);
         log('task.edit', data);
         dispatch(tasksActions.updateTask(data));
-        const from = { pathname: routes.tasksPagePath() };
-        history.push(from, { message: 'taskEdited' });
+        navigate(routes.tasksPagePath(), { state: { message: 'taskEdited' } });
       } catch (e) {
         console.error(e);
         log('task.edit.error', e);
@@ -90,7 +89,7 @@ const EditTask = () => {
           setErrors(errors);
           notify.addError('taskEditFail');
         } else {
-          handleError(e, notify, history, auth);
+          handleError(e, notify, navigate, auth);
         }
       }
     },

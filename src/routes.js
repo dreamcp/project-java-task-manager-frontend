@@ -1,7 +1,5 @@
 // @ts-check
 
-import path from 'path';
-
 // const hostname = 'localhost';
 // const port = process.env.REACT_APP_PORT || 5001;
 const apiUrl = '/api';
@@ -9,8 +7,7 @@ const { host, protocol } = window.location;
 const fullHost = `${protocol}//${host}`;
 
 const buildUrl = (part) => () => {
-  const urlPath = path.join(apiUrl, part);
-  const url = new URL(urlPath, fullHost);
+  const url = new URL(part, `${fullHost}${apiUrl}/`);
   return url.toString();
 };
 

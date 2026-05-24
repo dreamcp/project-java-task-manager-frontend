@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import {
-  useHistory,
+  useLocation,
 } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
@@ -11,7 +11,7 @@ import { NotificationContext } from '../contexts/index.js';
 import { actions as notifyActions } from '../slices/notificationSlice.js';
 
 const NotificationProvider = ({ children }) => {
-  const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const clean = () => dispatch(notifyActions.clean());
 
@@ -31,26 +31,24 @@ const NotificationProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    history.listen((location) => {
-      const { state } = location;
-      if (!state) {
-        dispatch(notifyActions.clean());
-        return;
-      }
-      const { message, type } = state;
-      if (!message) {
-        dispatch(notifyActions.clean());
-        return;
-      }
+    const { state } = location;
+    if (!state) {
+      dispatch(notifyActions.clean());
+      return;
+    }
+    const { message, type } = state;
+    if (!message) {
+      dispatch(notifyActions.clean());
+      return;
+    }
 
-      if (!type) {
-        messageMapping.info(message);
-        return;
-      }
+    if (!type) {
+      messageMapping.info(message);
+      return;
+    }
 
-      messageMapping[type](message);
-    });
-  });
+    messageMapping[type](message);
+  }, [location]);
 
   return (
     <NotificationContext.Provider value={{

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Table, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { actions, selectors } from '../../slices/taskStatusesSlice.js';
 import handleError from '../../utils.js';
@@ -16,7 +16,7 @@ const Statuses = () => {
   const { t } = useTranslation();
   const auth = useAuth();
   const notify = useNotify();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const taskStatuses = useSelector(selectors.selectAll);
@@ -35,7 +35,7 @@ const Statuses = () => {
       if (e.response?.status === 422) {
         notify.addError('taskStatusRemoveFail');
       } else {
-        handleError(e, notify, history, auth);
+        handleError(e, notify, navigate, auth);
       }
     }
   };
